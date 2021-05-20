@@ -21,3 +21,19 @@ The action requires no explicit inputs as it just reads the current `github` con
 | is_tag | Boolean set to `true` if `tag` is defined |
 | revision | Equals `tag` if `is_tag`, `sha_short` otherwise |
 | branch | Name of the current branch (if not `is_tag`) |
+
+## Usage
+
+```yaml
+...
+    - uses: quix-it/gha-git-info@v1
+      id: info
+    - run: |
+        echo "sha=${{ steps.info.outputs.sha }}"
+        echo "sha_short=${{ steps.info.outputs.sha_short }}"
+        echo "tag=${{ steps.info.outputs.tag }}"
+        echo "is_tag=${{ steps.info.outputs.is_tag }}"
+        echo "revision=${{ steps.info.outputs.revision }}"
+        echo "branch=${{ steps.info.outputs.branch }}"
+...
+```

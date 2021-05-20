@@ -1,0 +1,31 @@
+name: units-test
+on:
+  pull_request:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
+
+jobs:
+
+  units:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: npm ci
+    - run: npm test
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./
+      id: info
+    - run: |
+        echo "sha=${{ steps.info.outputs.sha }}"
+        echo "sha_short=${{ steps.info.outputs.sha_short }}"
+        echo "tag=${{ steps.info.outputs.tag }}"
+        echo "is_tag=${{ steps.info.outputs.is_tag }}"
+        echo "revision=${{ steps.info.outputs.revision }}"
+        echo "branch=${{ steps.info.outputs.branch }}"

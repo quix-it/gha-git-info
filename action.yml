@@ -1,0 +1,18 @@
+name: Get git info
+description: Get and manipulate info from github context
+outputs:
+  sha:
+    description: Long commit id
+  sha_short:
+    description: Short commit id (as in `git rev-parse --short HEAD`)
+  tag:
+    description: Tag name if the workflow has been triggered by a tag
+  is_tag:
+    description: Boolean set to `true` if `tag` is defined
+  revision:
+    description: Equals `tag` if `is_tag`, `sha_short` otherwise
+  branch:
+    description: Name of the current branch (if not `is_tag`)
+runs:
+  using: 'node12'
+  main: 'index.js'
