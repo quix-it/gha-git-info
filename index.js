@@ -4,7 +4,7 @@ const gitinfo = require('./gitinfo');
 
 async function run() {
   try {
-    const info = await gitinfo(github.context.payload);
+    const info = await gitinfo(github.context);
 
     core.setOutput("sha", info['sha']);
     core.setOutput("sha_short", info['sha_short']);

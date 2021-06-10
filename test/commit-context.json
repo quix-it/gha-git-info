@@ -1,27 +1,26 @@
 {
+  "payload": {
     "after": "637c03eddbc22e3ea878beb07cf3abd6988cf3d3",
     "base_ref": null,
     "before": "7e4ef5df53b49e4b398a0ee82aa72766c905c716",
-    "commits": [
-      {
-        "author": {
-          "email": "myself@localhost",
-          "name": "My Self",
-          "username": "myself"
-        },
-        "committer": {
-          "email": "myself@localhost",
-          "name": "My Self",
-          "username": "myself"
-        },
-        "distinct": true,
-        "id": "637c03eddbc22e3ea878beb07cf3abd6988cf3d3",
-        "message": "fix",
-        "timestamp": "2021-05-17T17:07:12+02:00",
-        "tree_id": "1d686f58b12be05a614224a3487095f23b7e3a70",
-        "url": "https://github.com/myself/my-favourite-game/commit/637c03eddbc22e3ea878beb07cf3abd6988cf3d3"
-      }
-    ],
+    "commits": [{
+      "author": {
+        "email": "myself@localhost",
+        "name": "My Self",
+        "username": "myself"
+      },
+      "committer": {
+        "email": "myself@localhost",
+        "name": "My Self",
+        "username": "myself"
+      },
+      "distinct": true,
+      "id": "637c03eddbc22e3ea878beb07cf3abd6988cf3d3",
+      "message": "fix",
+      "timestamp": "2021-05-17T17:07:12+02:00",
+      "tree_id": "1d686f58b12be05a614224a3487095f23b7e3a70",
+      "url": "https://github.com/myself/my-favourite-game/commit/637c03eddbc22e3ea878beb07cf3abd6988cf3d3"
+    }],
     "compare": "https://github.com/myself/my-favourite-game/compare/7e4ef5df53b4...637c03eddbc2",
     "created": false,
     "deleted": false,
@@ -173,4 +172,14 @@
       "type": "User",
       "url": "https://api.github.com/users/myself"
     }
-  }
+  },
+  "eventName": "push",
+  "sha": "637c03eddbc22e3ea878beb07cf3abd6988cf3d3",
+  "ref": "refs/heads/v1",
+  "workflow": "this-wf",
+  "action": "self",
+  "actor": "myself",
+  "job": "test",
+  "runNumber": 15,
+  "runId": 9876543210
+}

@@ -1,11 +1,16 @@
-let gitinfo = function gitinfo(payload) {
+let gitinfo = function gitinfo(context) {
   return new Promise((resolve) => {
     const info = {};
+    const tags_match = context.ref.match(/^refs\/tags\/(?<tag>.+)$/);
+    const heads_match = context.ref.match(/^refs\/heads\/(?<head>.+)$/);
 
-    info['sha'] = payload.head_commit.id;
+    if(context.eventName == 'push') {
+      info['sha'] = context.sha;
+    } else if(context.eventName == 'pull_request') {
+      info['sha'] = context.payload.pull_request.head.sha;
+    }
+
     info['sha_short'] = info['sha'].substring(0,7);
-
-    const tags_match = payload.ref.match(/^refs\/tags\/(?<tag>.+)$/);
     if (tags_match) {
       info['tag'] = tags_match.groups['tag'];
       info['revision'] = info['tag'];
@@ -15,7 +20,6 @@ let gitinfo = function gitinfo(payload) {
     }
     info['is_tag'] = (info['tag'].length > 0);
 
-    const heads_match = payload.ref.match(/^refs\/heads\/(?<head>.+)$/);
     if (heads_match) {
       info['branch'] = heads_match.groups['head'];
     }
