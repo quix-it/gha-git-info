@@ -1,5 +1,10 @@
 name: Get git info
 description: Get and manipulate info from github context
+inputs:
+  quiet:
+    description: Skip printing gathered info
+    required: false
+    default: false
 outputs:
   sha:
     description: Long commit id
@@ -15,4 +20,4 @@ outputs:
     description: Name of the current branch (if not `is_tag`)
 runs:
   using: 'node12'
-  main: 'index.js'
+  main: 'dist/index.js'
