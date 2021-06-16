@@ -19,13 +19,33 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+
     - uses: actions/checkout@v2
-    - uses: ./
-      id: info
-    - run: |
-        echo "sha=${{ steps.info.outputs.sha }}"
-        echo "sha_short=${{ steps.info.outputs.sha_short }}"
-        echo "tag=${{ steps.info.outputs.tag }}"
-        echo "is_tag=${{ steps.info.outputs.is_tag }}"
-        echo "revision=${{ steps.info.outputs.revision }}"
-        echo "branch=${{ steps.info.outputs.branch }}"
+
+    - name: Normal run
+      uses: ./
+      id: normal
+
+    - name: Quiet run
+      uses: ./
+      id: quiet
+      with:
+        quiet: true
+
+    - name: Print info from 'normal'
+      run: |
+        echo "sha=${{ steps.normal.outputs.sha }}"
+        echo "sha_short=${{ steps.normal.outputs.sha_short }}"
+        echo "tag=${{ steps.normal.outputs.tag }}"
+        echo "is_tag=${{ steps.normal.outputs.is_tag }}"
+        echo "revision=${{ steps.normal.outputs.revision }}"
+        echo "branch=${{ steps.normal.outputs.branch }}"
+
+    - name: Print info from 'quiet'
+      run: |
+        echo "sha=${{ steps.quiet.outputs.sha }}"
+        echo "sha_short=${{ steps.quiet.outputs.sha_short }}"
+        echo "tag=${{ steps.quiet.outputs.tag }}"
+        echo "is_tag=${{ steps.quiet.outputs.is_tag }}"
+        echo "revision=${{ steps.quiet.outputs.revision }}"
+        echo "branch=${{ steps.quiet.outputs.branch }}"
