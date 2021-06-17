@@ -10,6 +10,7 @@ let gitinfo = function gitinfo(context) {
       info['sha'] = context.payload.pull_request.head.sha;
     }
 
+    info['repository_name'] = context.payload.repository.name;
     info['sha_short'] = info['sha'].substring(0,7);
     if (tags_match) {
       info['tag'] = tags_match.groups['tag'];
