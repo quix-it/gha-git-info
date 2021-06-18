@@ -15,9 +15,13 @@ outputs:
   is_tag:
     description: Boolean set to `true` if `tag` is defined
   revision:
-    description: Equals `tag` if `is_tag`, `sha_short` otherwise
+    description: Equals `tag` stripped by leading 'v' if `is_tag`, `sha_short` otherwise
   branch:
     description: Name of the current branch (if not `is_tag`)
+  branch_unslashed:
+    description: Name of the current branch with `/`s replaced by `-`s 
+  repository_name:
+    description: Name of the current repository
 runs:
   using: 'node12'
   main: 'dist/index.js'

@@ -40,6 +40,7 @@ jobs:
         echo "is_tag=${{ steps.normal.outputs.is_tag }}"
         echo "revision=${{ steps.normal.outputs.revision }}"
         echo "branch=${{ steps.normal.outputs.branch }}"
+        echo "branch_unslashed=${{ steps.normal.outputs.branch_unslashed }}"
         echo "repository_name=${{ steps.normal.outputs.repository_name }}"
 
     - name: Print info from 'quiet'
@@ -50,4 +51,5 @@ jobs:
         echo "is_tag=${{ steps.quiet.outputs.is_tag }}"
         echo "revision=${{ steps.quiet.outputs.revision }}"
         echo "branch=${{ steps.quiet.outputs.branch }}"
+        echo "branch_unslashed=${{ steps.normal.outputs.branch_unslashed }}"
         echo "repository_name=${{ steps.normal.outputs.repository_name }}"
