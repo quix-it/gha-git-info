@@ -14,6 +14,7 @@ async function run() {
     core.setOutput("is_tag", info['is_tag']);
     core.setOutput("revision", info['revision']);
     core.setOutput("branch", info['branch']);
+    core.setOutput("branch_unslashed", info["branch_unslashed"]);
     core.setOutput("repository_name", info['repository_name']);
 
     if (!quiet) console.log(info);

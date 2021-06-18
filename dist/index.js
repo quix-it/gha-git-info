@@ -20,7 +20,12 @@ let gitinfo = function gitinfo(context) {
     info['sha_short'] = info['sha'].substring(0,7);
     if (tags_match) {
       info['tag'] = tags_match.groups['tag'];
-      info['revision'] = info['tag'];
+      const revision_match = info['tag'].match(/^v?(?<rev>[\d\.]+)$/);
+      if (revision_match == null) {
+        info['revision'] = info['tag'];
+      } else {
+        info['revision'] = revision_match.groups['rev'];
+      }
     } else {
       info['tag'] = '';
       info['revision'] = info['sha_short'];
@@ -29,6 +34,7 @@ let gitinfo = function gitinfo(context) {
 
     if (heads_match) {
       info['branch'] = heads_match.groups['head'];
+      info['branch_unslashed'] = info['branch'].replace(/\//,"-");
     }
 
     resolve(info);
@@ -6097,6 +6103,7 @@ async function run() {
     core.setOutput("is_tag", info['is_tag']);
     core.setOutput("revision", info['revision']);
     core.setOutput("branch", info['branch']);
+    core.setOutput("branch_unslashed", info["branch_unslashed"]);
     core.setOutput("repository_name", info['repository_name']);
 
     if (!quiet) console.log(info);

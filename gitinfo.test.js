@@ -25,3 +25,20 @@ test('test branch', async () => {
   const info = await gitinfo(commit_context);
   expect(info['branch']).toBe('v1');
 });
+
+const test_tagged_contents = {
+  ref: "refs/tags/v1.0",
+  eventName: "push",
+  sha: "0123456",
+  payload: {
+    repository: {
+      name: "gha-git-info"
+    }
+  }
+};
+test('test v-tags', async () => {
+  const info = await gitinfo(test_tagged_contents);
+  expect(info['tag']).toBe('v1.0');
+  expect(info['revision']).toBe('1.0');
+  expect(info['repository_name']).toBe('gha-git-info');
+});

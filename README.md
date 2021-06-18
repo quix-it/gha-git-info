@@ -1,6 +1,6 @@
 # Git info
 
-![unit-test](https://github.com/quix-it/gha-update-env-file/actions/workflows/test.yml/badge.svg)
+![unit-test](https://github.com/quix-it/gha-update-env-file/actions/workflows/test.yml/badge.svg?branch=v1)
 
 This is a GitHub Actions action used for manipulating info from `github` context and exposing them for being consumed by subsequent steps/jobs in a workflow.
 
@@ -21,6 +21,8 @@ The action requires no explicit inputs as it just reads the current `github` con
 | is_tag | Boolean set to `true` if `tag` is defined |
 | revision | Equals `tag` if `is_tag`, `sha_short` otherwise |
 | branch | Name of the current branch (if not `is_tag`) |
+| branch_unslashed | Name of the current branch with `/`s replaced by `-`s |
+| repository_name | Name of the current repository |
 
 ## Usage
 
@@ -35,5 +37,6 @@ The action requires no explicit inputs as it just reads the current `github` con
         echo "is_tag=${{ steps.info.outputs.is_tag }}"
         echo "revision=${{ steps.info.outputs.revision }}"
         echo "branch=${{ steps.info.outputs.branch }}"
+        echo "repository_name=${{ steps.info.outputs.repository_name }}"
 ...
 ```
