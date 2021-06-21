@@ -47,7 +47,7 @@
       "email": "987654321+myself@users.noreply.github.com",
       "name": "myself"
     },
-    "ref": "refs/heads/v1",
+    "ref": "refs/heads/fix/v1",
     "repository": {
       "archive_url": "https://api.github.com/repos/myself/my-favourite-game/{archive_format}{/ref}",
       "archived": false,
@@ -175,7 +175,7 @@
   },
   "eventName": "push",
   "sha": "637c03eddbc22e3ea878beb07cf3abd6988cf3d3",
-  "ref": "refs/heads/v1",
+  "ref": "refs/heads/fix/v1",
   "workflow": "this-wf",
   "action": "self",
   "actor": "myself",

@@ -25,12 +25,23 @@ jobs:
     - name: Normal run
       uses: ./
       id: normal
+      env:
+        NEXUS_BASE_PATH: https://nexus.local.domain
+        MAVEN_GROUP_ID: it.quix.github
+        MAVEN_ARTIFACT_ID: test-actions
 
     - name: Quiet run
       uses: ./
       id: quiet
       with:
         quiet: true
+        nexus_base_path: https://nexus.input.param
+        maven_group_id: it.quix.github-input
+        maven_artifact_id: input-param
+      env:
+        NEXUS_BASE_PATH: https://this.will.be.overridden
+        MAVEN_GROUP_ID: it.quix.environment
+        MAVEN_ARTIFACT_ID: overridden
 
     - name: Print info from 'normal'
       run: |
@@ -42,6 +53,10 @@ jobs:
         echo "branch=${{ steps.normal.outputs.branch }}"
         echo "branch_unslashed=${{ steps.normal.outputs.branch_unslashed }}"
         echo "repository_name=${{ steps.normal.outputs.repository_name }}"
+        echo "maven_revision=${{ steps.normal.outputs.maven_revision }}"
+        echo "artifact_revision=${{ steps.normal.outputs.artifact_revision }}"
+        echo "nexus_repo=${{ steps.normal.outputs.nexus_repo }}"
+        echo "nexus_search_url=${{ steps.normal.outputs.nexus_search_url }}"
 
     - name: Print info from 'quiet'
       run: |
@@ -51,5 +66,9 @@ jobs:
         echo "is_tag=${{ steps.quiet.outputs.is_tag }}"
         echo "revision=${{ steps.quiet.outputs.revision }}"
         echo "branch=${{ steps.quiet.outputs.branch }}"
-        echo "branch_unslashed=${{ steps.normal.outputs.branch_unslashed }}"
-        echo "repository_name=${{ steps.normal.outputs.repository_name }}"
+        echo "branch_unslashed=${{ steps.quiet.outputs.branch_unslashed }}"
+        echo "repository_name=${{ steps.quiet.outputs.repository_name }}"
+        echo "maven_revision=${{ steps.quiet.outputs.maven_revision }}"
+        echo "artifact_revision=${{ steps.quiet.outputs.artifact_revision }}"
+        echo "nexus_repo=${{ steps.quiet.outputs.nexus_repo }}"
+        echo "nexus_search_url=${{ steps.quiet.outputs.nexus_search_url }}"
