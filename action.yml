@@ -5,6 +5,15 @@ inputs:
     description: Skip printing gathered info
     required: false
     default: false
+  nexus_base_path:
+    description: Base URL to Sonatype Nexus artifact storage (overrides NEXUS_BASE_PATH environment variable)
+    required: false
+  maven_group_id:
+    description: Maven group ID (overrides MAVEN_GROUP_ID environment variable)
+    required: false
+  maven_artifact_id:
+    description: Maven artifact ID (overrides MAVEN_ARTIFACT_ID environment variable)
+    required: false
 outputs:
   sha:
     description: Long commit id

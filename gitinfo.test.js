@@ -23,10 +23,11 @@ test('test tag/revision', async () => {
 
 test('test branch', async () => {
   const info = await gitinfo(commit_context);
-  expect(info['branch']).toBe('v1');
+  expect(info['branch']).toBe('fix/v1');
+  expect(info['branch_unslashed']).toBe('fix-v1');
 });
 
-const test_tagged_contents = {
+const tagged_contents = {
   ref: "refs/tags/v1.0",
   eventName: "push",
   sha: "0123456",
@@ -36,9 +37,17 @@ const test_tagged_contents = {
     }
   }
 };
+
 test('test v-tags', async () => {
-  const info = await gitinfo(test_tagged_contents);
+  const info = await gitinfo(tagged_contents);
   expect(info['tag']).toBe('v1.0');
   expect(info['revision']).toBe('1.0');
   expect(info['repository_name']).toBe('gha-git-info');
+});
+
+test('test maven info on commit', async () => {
+  const info = await gitinfo(commit_context);
+  expect(info['maven_revision']).toBe('fix-v1-SNAPSHOT');
+  expect(info['artifact_revision']).toBe('fix-v1');
+  expect(info['nexus_repo']).toBe('snapshots');
 });
