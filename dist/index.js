@@ -52,13 +52,14 @@ let gitinfo = function gitinfo(context, inputs = {}) {
     const nexus_base_path = inputs['nexus_base_path'] || process.env['NEXUS_BASE_PATH'];
     const maven_group_id = inputs['maven_group_id'] || process.env['MAVEN_GROUP_ID'];
     const maven_artifact_id = inputs['maven_artifact_id'] || process.env['MAVEN_ARTIFACT_ID'];
+    const maven_extension = inputs['maven_extension'] || process.env['MAVEN_EXTENSION'] || "war";
     
     if (nexus_base_path && maven_group_id && maven_artifact_id) {
       var params = [
         `repository=${info['nexus_repo']}`,
         `group=${maven_group_id}`,
         `name=${maven_artifact_id}`,
-        `maven.extension=${process.env['MAVEN_FORMAT'] || "war"}`,
+        `maven.extension=${maven_extension}`,
         `sort=version`,
         `direction=desc`
       ]
@@ -6130,6 +6131,7 @@ async function run() {
     inputs['nexus_base_path'] = core.getInput('nexus_base_path');
     inputs['maven_group_id'] = core.getInput('maven_group_id');
     inputs['maven_artifact_id'] = core.getInput('maven_artifact_id');
+    inputs['maven_extension'] = core.getInput('maven_extension');
     const quiet = (core.getInput('quiet') == 'true');
 
     const info = await gitinfo(github.context, inputs);

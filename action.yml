@@ -14,6 +14,9 @@ inputs:
   maven_artifact_id:
     description: Maven artifact ID (overrides MAVEN_ARTIFACT_ID environment variable)
     required: false
+  maven_extension:
+    description: Maven artifact extension to search for (overrides MAVEN_EXTENSION environment variable)
+    required: false
 outputs:
   sha:
     description: Long commit id

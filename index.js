@@ -8,6 +8,7 @@ async function run() {
     inputs['nexus_base_path'] = core.getInput('nexus_base_path');
     inputs['maven_group_id'] = core.getInput('maven_group_id');
     inputs['maven_artifact_id'] = core.getInput('maven_artifact_id');
+    inputs['maven_extension'] = core.getInput('maven_extension');
     const quiet = (core.getInput('quiet') == 'true');
 
     const info = await gitinfo(github.context, inputs);
