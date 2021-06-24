@@ -38,6 +38,7 @@ jobs:
         nexus_base_path: https://nexus.input.param
         maven_group_id: it.quix.github-input
         maven_artifact_id: input-param
+        maven_extension: jar
       env:
         NEXUS_BASE_PATH: https://this.will.be.overridden
         MAVEN_GROUP_ID: it.quix.environment
