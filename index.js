@@ -9,6 +9,9 @@ async function run() {
     inputs['maven_group_id'] = core.getInput('maven_group_id');
     inputs['maven_artifact_id'] = core.getInput('maven_artifact_id');
     inputs['maven_extension'] = core.getInput('maven_extension');
+    inputs['maven_classifier'] = core.getInput('maven_classifier');
+    inputs['releases_repo'] = core.getInput('releases_repo');
+    inputs['snapshots_repo'] = core.getInput('snapshots_repo');
     const quiet = (core.getInput('quiet') == 'true');
 
     const info = await gitinfo(github.context, inputs);

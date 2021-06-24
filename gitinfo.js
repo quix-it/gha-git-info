@@ -4,6 +4,14 @@ let gitinfo = function gitinfo(context, inputs = {}) {
     const tags_match = context.ref.match(/^refs\/tags\/(?<tag>.+)$/);
     const heads_match = context.ref.match(/^refs\/heads\/(?<head>.+)$/);
 
+    const nexus_base_path = inputs['nexus_base_path'] || process.env['NEXUS_BASE_PATH'];
+    const maven_group_id = inputs['maven_group_id'] || process.env['MAVEN_GROUP_ID'];
+    const maven_artifact_id = inputs['maven_artifact_id'] || process.env['MAVEN_ARTIFACT_ID'];
+    const maven_extension = inputs['maven_extension'] || process.env['MAVEN_EXTENSION'] || "war";
+    const maven_classifier = inputs['maven_classifier'] || process.env['MAVEN_CLASSIFIER'];
+    const releases_repo = inputs['releases_repo'] || process.env['RELEASES_REPO'] || "releases";
+    const snapshots_repo = inputs['snapshots_repo'] || process.env['SNAPSHOTS_REPO'] || "snapshots";
+
     if(context.eventName == 'push') {
       info['sha'] = context.sha;
       if (heads_match) {
@@ -36,32 +44,32 @@ let gitinfo = function gitinfo(context, inputs = {}) {
     if (info['is_tag']) {
       info['maven_revision'] = info['revision'];
       info['artifact_revision'] = info['revision'];
-      info['nexus_repo'] = process.env['RELEASES_REPO'] || "releases";
+      info['nexus_repo'] = releases_repo;
     } else {
       info['maven_revision'] = info['branch_unslashed'] + "-SNAPSHOT";
       info['artifact_revision'] = info['branch_unslashed'];
-      info['nexus_repo'] = process.env['SNAPSHOTS_REPO'] || "snapshots";
+      info['nexus_repo'] = snapshots_repo;
     }
-
-    const nexus_base_path = inputs['nexus_base_path'] || process.env['NEXUS_BASE_PATH'];
-    const maven_group_id = inputs['maven_group_id'] || process.env['MAVEN_GROUP_ID'];
-    const maven_artifact_id = inputs['maven_artifact_id'] || process.env['MAVEN_ARTIFACT_ID'];
-    const maven_extension = inputs['maven_extension'] || process.env['MAVEN_EXTENSION'] || "war";
     
     if (nexus_base_path && maven_group_id && maven_artifact_id) {
       var params = [
         `repository=${info['nexus_repo']}`,
         `group=${maven_group_id}`,
         `name=${maven_artifact_id}`,
-        `maven.extension=${maven_extension}`,
-        `sort=version`,
-        `direction=desc`
-      ]
-      if (info['is_tag']) {
-        params.push(`version=${info['artifact_revision']}`)
-      } else {
-        params.push(`version=${info['artifact_revision']}-*`)
+      ];
+      if (maven_extension) {
+        params.push(`maven.extension=${maven_extension}`);
       }
+      if (maven_classifier) {
+        params.push(`maven.classifier=${maven_classifier}`);
+      }
+      if (info['is_tag']) {
+        params.push(`version=${info['artifact_revision']}`);
+      } else {
+        params.push(`version=${info['artifact_revision']}-*`);
+      }
+      params.push(`sort=version`);
+      params.push(`direction=desc`);
       info['nexus_search_url'] = `${nexus_base_path}/service/rest/v1/search/assets?${params.join('&')}`
     }
 
