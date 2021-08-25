@@ -20,20 +20,23 @@ If the workflow produces some Maven artifact and needs to interact with a Nexus 
 
 | Name | Mandatory | Default | Description |
 | - | - | - | - |
-| nexus_base_path | `true` | | Base URL to the Nexus artifactory appliance (overrides NEXUS_BASE_PATH environment variable) |
-| maven_group_id | `true` | | Group ID of the artifact as defined in pom.xml (overrides MAVEN_GROUP_ID environment variable) |
-| maven_artifact_id | `true` | | Artifact name as defined in pom.xml (overrides MAVEN_ARTIFACT_ID environment variable) |
+| artifact_always | `false` | | Always makes `make_artifact` output `true` (overrides ARTIFACT_ALWAYS environment variable) |
+| artifact_events | `false` | | Comma-separated list of events that make `make_artifact` output `true` (overrides ARTIFACT_EVENTS environment variable). Push tag event is always included. |
+| nexus_base_path | `false` | | Base URL to the Nexus artifactory appliance (overrides NEXUS_BASE_PATH environment variable) |
+| maven_group_id | `false` | | Group ID of the artifact as defined in pom.xml (overrides MAVEN_GROUP_ID environment variable) |
+| maven_artifact_id | `false` | | Artifact name as defined in pom.xml (overrides MAVEN_ARTIFACT_ID environment variable) |
 | maven_extension | `false` | `"war"` | Maven extension of the artifact to search for (overrides MAVEN_EXTENSION environment variable) |
 | maven_classifier | `false` | | Maven classifier to search for (overrides MAVEN_CLASSIFIER environment variable) |
 | releases_repo | `false` | `"releases"` | Releases repository name (overrides RELEASES_REPO environment variable) |
 | snapshots_repo | `false` | `"snapshots"` | Snapshots repository name (overrides SNAPSHOTS_REPO environment variable) |
 
-If the mandatory parameters are not provided no `nexus_search_url` output get produced.
+If the `nexus_base_path`, `maven_group_id` and `maven_artifact_id` parameters are not provided no `nexus_search_url` output get produced.
 
 ## Outputs
 
 | Name | Description |
 | - | - |
+| event_name | `event_name` value from `github`'s context |
 | sha | Long commit id |
 | sha_short | Short commit id (as in `git rev-parse --short HEAD`) |
 | tag | Tag name if the workflow has been triggered by a tag |
@@ -43,7 +46,7 @@ If the mandatory parameters are not provided no `nexus_search_url` output get pr
 | branch | Name of the current branch (if not `is_tag`) |
 | branch_unslashed | Name of the current branch with `/`s replaced by `-`s |
 | repository_name | Name of the current repository |
-| maven_revision | Revision to be used within Maven's pom.xml: `revision` for tags, `branch_unslashed` plus `"-SNAPSHOT"` otherwise |
+| maven_revision | Revision to be used within Maven's pom.xml: `revision` for tags, `branch_unslashed` plus `-SNAPSHOT` otherwise |
 | artifact_revision | Asset version to search Nexus artifactory for (must not include `-SNAPSHOT`): `revision` for tags, `branch_unslashed` otherwise |
 | nexus_repo | Either `releases_repo` or `snapshots_repo` from inputs depending on whether the workflow trigger was a push tag event or not |
 | nexus_search_url | The URL to the Nexus API to search for the produced artifacts |

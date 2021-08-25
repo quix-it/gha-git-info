@@ -30,6 +30,7 @@ jobs:
         MAVEN_GROUP_ID: it.quix.github
         MAVEN_ARTIFACT_ID: test-actions
         ARTIFACT_ALWAYS: true
+        ARTIFACT_EVENTS: pull_request
 
     - name: Quiet run
       uses: ./
@@ -40,13 +41,16 @@ jobs:
         maven_group_id: it.quix.github-input
         maven_artifact_id: input-param
         maven_extension: jar
+        artifact_always: false
       env:
         NEXUS_BASE_PATH: https://this.will.be.overridden
         MAVEN_GROUP_ID: it.quix.environment
         MAVEN_ARTIFACT_ID: overridden
+        ARTIFACT_ALWAYS: true
 
     - name: Print info from 'normal'
       run: |
+        echo "event_name=${{ steps.normal.outputs.event_name }}"
         echo "sha=${{ steps.normal.outputs.sha }}"
         echo "sha_short=${{ steps.normal.outputs.sha_short }}"
         echo "tag=${{ steps.normal.outputs.tag }}"
@@ -63,6 +67,7 @@ jobs:
 
     - name: Print info from 'quiet'
       run: |
+        echo "event_name=${{ steps.quiet.outputs.event_name }}"
         echo "sha=${{ steps.quiet.outputs.sha }}"
         echo "sha_short=${{ steps.quiet.outputs.sha_short }}"
         echo "tag=${{ steps.quiet.outputs.tag }}"

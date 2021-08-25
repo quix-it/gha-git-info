@@ -1,41 +1,60 @@
 name: Get git info
-description: Get and manipulate info from github context
+description: Get and manipulate info from github context.
+
 inputs:
   quiet:
-    description: Skip printing gathered info
+    description: Skip printing gathered info.
     required: false
     default: false
+  artifact_always:
+    description: Always makes `make_artifact` output `true` (overrides ARTIFACT_ALWAYS environment variable).
+    required: false
+  artifact_events:
+    description: Comma-separated list of events that make `make_artifact` output `true` (overrides ARTIFACT_EVENTS environment variable). Push tag event is always included.
+    required: false
   nexus_base_path:
-    description: Base URL to Sonatype Nexus artifact storage (overrides NEXUS_BASE_PATH environment variable)
+    description: Base URL to Sonatype Nexus artifact storage (overrides NEXUS_BASE_PATH environment variable).
     required: false
   maven_group_id:
-    description: Maven group ID (overrides MAVEN_GROUP_ID environment variable)
+    description: Maven group ID (overrides MAVEN_GROUP_ID environment variable).
     required: false
   maven_artifact_id:
-    description: Maven artifact ID (overrides MAVEN_ARTIFACT_ID environment variable)
+    description: Maven artifact ID (overrides MAVEN_ARTIFACT_ID environment variable).
     required: false
   maven_extension:
-    description: Maven artifact extension to search for (overrides MAVEN_EXTENSION environment variable)
+    description: Maven artifact extension to search for (overrides MAVEN_EXTENSION environment variable).
     required: false
+
 outputs:
+  event_name:
+    description: Same as `event_name` from `github`'s context.
   sha:
-    description: Long commit id
+    description: Long commit id.
   sha_short:
-    description: Short commit id (as in `git rev-parse --short HEAD`)
+    description: Short commit id (as in `git rev-parse --short HEAD`).
   tag:
-    description: Tag name if the workflow has been triggered by a tag
+    description: Tag name if the workflow has been triggered by a tag.
   is_tag:
-    description: Boolean set to `true` if `tag` is defined
+    description: Boolean set to `true` if `tag` is defined.
   make_artifact:
-    description: Boolean set to `true` if either `is_tag` output or `ARTIFACT_ALWAYS` environment variable is true
+    description: Boolean set to `true` if either `is_tag` output or `artifact_always` input (or `ARTIFACT_ALWAYS` environment variable if the latter is not set) is true.
   revision:
-    description: Equals `tag` stripped by leading 'v' if `is_tag`, `sha_short` otherwise
+    description: Equals `tag` stripped by leading 'v' if `is_tag`, `sha_short` otherwise.
   branch:
-    description: Name of the current branch (if not `is_tag`)
+    description: Name of the current branch (if not `is_tag`).
   branch_unslashed:
-    description: Name of the current branch with `/`s replaced by `-`s 
+    description: Name of the current branch with `/`s replaced by `-`s .
   repository_name:
-    description: Name of the current repository
+    description: Name of the current repository.
+  maven_revision:
+    description: "Revision to be used within Maven's pom.xml: `revision` for tags, `branch_unslashed` plus `-SNAPSHOT` otherwise."
+  artifact_revision:
+    description: "Asset version to search Nexus artifactory for (must not include `-SNAPSHOT`): `revision` for tags, `branch_unslashed` otherwise."
+  nexus_repo:
+    description: Either `releases_repo` or `snapshots_repo` from inputs depending on whether the workflow trigger was a push tag event or not.
+  nexus_search_url:
+    description: The URL to the Nexus API to search for the produced artifacts.
+
 runs:
   using: 'node12'
   main: 'dist/index.js'

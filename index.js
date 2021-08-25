@@ -5,6 +5,8 @@ const gitinfo = require('./gitinfo');
 async function run() {
   try {
     const inputs = {};
+    inputs['artifact_always'] = core.getInput('artifact_always');
+    inputs['artifact_events'] = core.getInput('artifact_events');
     inputs['nexus_base_path'] = core.getInput('nexus_base_path');
     inputs['maven_group_id'] = core.getInput('maven_group_id');
     inputs['maven_artifact_id'] = core.getInput('maven_artifact_id');
@@ -16,6 +18,7 @@ async function run() {
 
     const info = await gitinfo(github.context, inputs);
 
+    core.setOutput("event_name", info['event_name']);
     core.setOutput("sha", info['sha']);
     core.setOutput("sha_short", info['sha_short']);
     core.setOutput("tag", info['tag']);
