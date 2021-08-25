@@ -29,6 +29,7 @@ jobs:
         NEXUS_BASE_PATH: https://nexus.local.domain
         MAVEN_GROUP_ID: it.quix.github
         MAVEN_ARTIFACT_ID: test-actions
+        ARTIFACT_ALWAYS: true
 
     - name: Quiet run
       uses: ./
@@ -50,6 +51,7 @@ jobs:
         echo "sha_short=${{ steps.normal.outputs.sha_short }}"
         echo "tag=${{ steps.normal.outputs.tag }}"
         echo "is_tag=${{ steps.normal.outputs.is_tag }}"
+        echo "make_artifact=${{ steps.normal.outputs.make_artifact }}"
         echo "revision=${{ steps.normal.outputs.revision }}"
         echo "branch=${{ steps.normal.outputs.branch }}"
         echo "branch_unslashed=${{ steps.normal.outputs.branch_unslashed }}"
@@ -65,6 +67,7 @@ jobs:
         echo "sha_short=${{ steps.quiet.outputs.sha_short }}"
         echo "tag=${{ steps.quiet.outputs.tag }}"
         echo "is_tag=${{ steps.quiet.outputs.is_tag }}"
+        echo "make_artifact=${{ steps.quiet.outputs.make_artifact }}"
         echo "revision=${{ steps.quiet.outputs.revision }}"
         echo "branch=${{ steps.quiet.outputs.branch }}"
         echo "branch_unslashed=${{ steps.quiet.outputs.branch_unslashed }}"

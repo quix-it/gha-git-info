@@ -20,6 +20,7 @@ async function run() {
     core.setOutput("sha_short", info['sha_short']);
     core.setOutput("tag", info['tag']);
     core.setOutput("is_tag", info['is_tag']);
+    core.setOutput("make_artifact", info['make_artifact']);
     core.setOutput("revision", info['revision']);
     core.setOutput("branch", info['branch']);
     core.setOutput("branch_unslashed", info['branch_unslashed']);
