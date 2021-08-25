@@ -17,7 +17,11 @@ let gitinfo = function gitinfo(context, inputs = {}) {
     const maven_classifier = inputs['maven_classifier'] || process.env['MAVEN_CLASSIFIER'];
     const releases_repo = inputs['releases_repo'] || process.env['RELEASES_REPO'] || "releases";
     const snapshots_repo = inputs['snapshots_repo'] || process.env['SNAPSHOTS_REPO'] || "snapshots";
-    const artifact_always = ( process.env['ARTIFACT_ALWAYS'] === "true" );
+    const artifact_always = ( inputs['artifact_always'] !== undefined ? inputs['artifact_always'] : process.env['ARTIFACT_ALWAYS'] ) === "true";
+    const artifact_events_temp = inputs['artifact_events'] || process.env['ARTIFACT_EVENTS'] || ""
+    const artifact_events = [...new Set(artifact_events_temp.split(",").filter(x => x.length > 0))];
+
+    info['event_name'] = context.eventName;
 
     if(context.eventName == 'push') {
       info['sha'] = context.sha;
@@ -46,7 +50,7 @@ let gitinfo = function gitinfo(context, inputs = {}) {
       info['revision'] = info['sha_short'];
     }
     info['is_tag'] = (info['tag'].length > 0);
-    info['make_artifact'] = info['is_tag'] || artifact_always;
+    info['make_artifact'] = artifact_always || info['is_tag'] || artifact_events.includes(context.eventName);
 
     if (info['is_tag']) {
       info['maven_revision'] = info['revision'];
@@ -6257,6 +6261,8 @@ const gitinfo = __nccwpck_require__(338);
 async function run() {
   try {
     const inputs = {};
+    inputs['artifact_always'] = core.getInput('artifact_always');
+    inputs['artifact_events'] = core.getInput('artifact_events');
     inputs['nexus_base_path'] = core.getInput('nexus_base_path');
     inputs['maven_group_id'] = core.getInput('maven_group_id');
     inputs['maven_artifact_id'] = core.getInput('maven_artifact_id');
@@ -6268,6 +6274,7 @@ async function run() {
 
     const info = await gitinfo(github.context, inputs);
 
+    core.setOutput("event_name", info['event_name']);
     core.setOutput("sha", info['sha']);
     core.setOutput("sha_short", info['sha_short']);
     core.setOutput("tag", info['tag']);

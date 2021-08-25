@@ -51,3 +51,41 @@ test('test maven info on commit', async () => {
   expect(info['artifact_revision']).toBe('fix-v1');
   expect(info['nexus_repo']).toBe('snapshots');
 });
+
+test('artifact_always vs ARTIFACT_ALWAYS', async () => {
+  const inputs = {
+    artifact_always: false
+  }
+  process.env.ARTIFACT_ALWAYS = "true";
+  const info = await gitinfo(commit_context, inputs);
+
+  expect(info['is_tag']).toBeFalsy();
+  expect(info['make_artifact']).toBeFalsy();
+  delete process.env.ARTIFACT_ALWAYS;
+});
+
+test('no tag and ARTIFACT_ALWAYS true', async () => {
+  process.env.ARTIFACT_ALWAYS = "true";
+  const info = await gitinfo(commit_context);
+
+  expect(info['is_tag']).toBeFalsy();
+  expect(info['make_artifact']).toBeTruthy();
+  delete process.env.ARTIFACT_ALWAYS;
+});
+
+test('artifact_events unset', async () => {
+  const info = await gitinfo(commit_context);
+
+  expect(info['is_tag']).toBeFalsy();
+  expect(info['make_artifact']).toBeFalsy();
+});
+
+test('artifact_events = "push,pull_request"', async () => {
+  const inputs = {
+    artifact_events: "push,pull_request"
+  }
+  const info = await gitinfo(commit_context, inputs);
+
+  expect(info['is_tag']).toBeFalsy();
+  expect(info['make_artifact']).toBeTruthy();
+});
