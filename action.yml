@@ -26,6 +26,8 @@ outputs:
     description: Tag name if the workflow has been triggered by a tag
   is_tag:
     description: Boolean set to `true` if `tag` is defined
+  make_artifact:
+    description: Boolean set to `true` if either `is_tag` output or `ARTIFACT_ALWAYS` environment variable is true
   revision:
     description: Equals `tag` stripped by leading 'v' if `is_tag`, `sha_short` otherwise
   branch:

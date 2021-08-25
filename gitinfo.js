@@ -11,6 +11,7 @@ let gitinfo = function gitinfo(context, inputs = {}) {
     const maven_classifier = inputs['maven_classifier'] || process.env['MAVEN_CLASSIFIER'];
     const releases_repo = inputs['releases_repo'] || process.env['RELEASES_REPO'] || "releases";
     const snapshots_repo = inputs['snapshots_repo'] || process.env['SNAPSHOTS_REPO'] || "snapshots";
+    const artifact_always = ( process.env['ARTIFACT_ALWAYS'] === "true" );
 
     if(context.eventName == 'push') {
       info['sha'] = context.sha;
@@ -39,7 +40,7 @@ let gitinfo = function gitinfo(context, inputs = {}) {
       info['revision'] = info['sha_short'];
     }
     info['is_tag'] = (info['tag'].length > 0);
-
+    info['make_artifact'] = info['is_tag'] || artifact_always;
 
     if (info['is_tag']) {
       info['maven_revision'] = info['revision'];
