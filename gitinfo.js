@@ -21,13 +21,12 @@ let gitinfo = function gitinfo(context, inputs = {}) {
       info['sha'] = context.sha;
       if (heads_match) {
         info['branch'] = heads_match.groups['head'];
-        info['branch_unslashed'] = (info['branch'] || "").replace(/\//,"-");
       }
     } else if(context.eventName == 'pull_request') {
       info['sha'] = context.payload.pull_request.head.sha;
       info['branch'] = process.env.GITHUB_HEAD_REF;
-      info['branch_unslashed'] = (info['branch'] || "").replace(/\//,"-");
     }
+    info['branch_unslashed'] = (info['branch'] || "").replace(/[\/_]/g,"-");
 
     info['repository_name'] = context.payload.repository.name;
     info['sha_short'] = info['sha'].substring(0,7);
