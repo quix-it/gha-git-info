@@ -46,7 +46,7 @@ If the `nexus_base_path`, `maven_group_id` and `maven_artifact_id` parameters ar
 | branch | Name of the current branch (if not `is_tag`) |
 | branch_unslashed | Name of the current branch with `/`s replaced by `-`s |
 | repository_name | Name of the current repository |
-| maven_revision | Revision to be used within Maven's pom.xml: `revision` for tags, `branch_unslashed` plus `-SNAPSHOT` otherwise |
+| maven_revision | Revision to be used within Maven's pom.xml: `revision` for tags, `branch_unslashed` plus `-SNAPSHOT` otherwise prepended by `0.0.0-` to make it semver-compliant |
 | artifact_revision | Asset version to search Nexus artifactory for (must not include `-SNAPSHOT`): `revision` for tags, `branch_unslashed` otherwise |
 | nexus_repo | Either `releases_repo` or `snapshots_repo` from inputs depending on whether the workflow trigger was a push tag event or not |
 | nexus_search_url | The URL to the Nexus API to search for the produced artifacts |
