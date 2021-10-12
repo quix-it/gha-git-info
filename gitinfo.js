@@ -50,7 +50,7 @@ let gitinfo = function gitinfo(context, inputs = {}) {
       info['artifact_revision'] = info['revision'];
       info['nexus_repo'] = releases_repo;
     } else {
-      info['maven_revision'] = info['branch_unslashed'] + "-SNAPSHOT";
+      info['maven_revision'] = "0.0.0-" + info['branch_unslashed'] + "-SNAPSHOT";
       info['artifact_revision'] = info['branch_unslashed'];
       info['nexus_repo'] = snapshots_repo;
     }
