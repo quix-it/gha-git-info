@@ -48,7 +48,7 @@ test('test v-tags', async () => {
 test('test maven info on commit', async () => {
   const info = await gitinfo(commit_context);
   expect(info['maven_revision']).toBe('0.0.0-fix-v1-SNAPSHOT');
-  expect(info['artifact_revision']).toBe('fix-v1');
+  expect(info['artifact_revision']).toBe('0.0.0-fix-v1');
   expect(info['nexus_repo']).toBe('snapshots');
 });
 

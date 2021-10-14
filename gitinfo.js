@@ -46,12 +46,12 @@ let gitinfo = function gitinfo(context, inputs = {}) {
     info['make_artifact'] = artifact_always || info['is_tag'] || artifact_events.includes(context.eventName);
 
     if (info['is_tag']) {
-      info['maven_revision'] = info['revision'];
       info['artifact_revision'] = info['revision'];
+      info['maven_revision'] = info['artifact_revision'];
       info['nexus_repo'] = releases_repo;
     } else {
-      info['maven_revision'] = "0.0.0-" + info['branch_unslashed'] + "-SNAPSHOT";
-      info['artifact_revision'] = info['branch_unslashed'];
+      info['artifact_revision'] = "0.0.0-" + info['branch_unslashed'];
+      info['maven_revision'] = info['artifact_revision'] + "-SNAPSHOT";
       info['nexus_repo'] = snapshots_repo;
     }
     
