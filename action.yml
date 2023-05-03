@@ -1,11 +1,11 @@
-name: Get git info
+name: Get git info with composite action
 description: Get and manipulate info from github context.
 
 inputs:
   quiet:
     description: Skip printing gathered info.
     required: false
-    default: false
+    default: 'false'
   artifact_always:
     description: Always makes `make_artifact` output `true` (overrides ARTIFACT_ALWAYS environment variable).
     required: false
@@ -24,37 +24,190 @@ inputs:
   maven_extension:
     description: Maven artifact extension to search for (overrides MAVEN_EXTENSION environment variable).
     required: false
+  maven_classifier: 
+    description: Maven classifier to search for (overrides MAVEN_CLASSIFIER environment variable)
+    required: false
+  releses_repo: 
+    description: Releases repository name (overrides RELEASES_REPO environment variable)
+    required: false
+  snapshots_repo: 
+    description: Snapshots repository name (overrides SNAPSHOTS_REPO environment variable)
+    required: false
+  
+  
 
 outputs:
   event_name:
     description: Same as `event_name` from `github`'s context.
+    value: ${{ steps.getinfo.outputs.event_name }}
   sha:
     description: Long commit id.
+    value: ${{ steps.getinfo.outputs.sha }}
   sha_short:
     description: Short commit id (as in `git rev-parse --short HEAD`).
+    value: ${{ steps.getinfo.outputs.sha_short }}
   tag:
     description: Tag name if the workflow has been triggered by a tag.
+    value: ${{ steps.getinfo.outputs.tag }}
   is_tag:
     description: Boolean set to `true` if `tag` is defined.
+    value: ${{ steps.getinfo.outputs.is_tag }}
   make_artifact:
     description: Boolean set to `true` if either `is_tag` output or `artifact_always` input (or `ARTIFACT_ALWAYS` environment variable if the latter is not set) is true.
+    value: ${{ steps.getinfo.outputs.make_artifact }}
   revision:
     description: Equals `tag` stripped by leading 'v' if `is_tag`, `sha_short` otherwise.
+    value: ${{ steps.getinfo.outputs.revision }}
   branch:
     description: Name of the current branch (if not `is_tag`).
+    value: ${{ steps.getinfo.outputs.branch }}
   branch_unslashed:
     description: Name of the current branch with `/`s replaced by `-`s .
+    value: ${{ steps.getinfo.outputs.branch_unslashed }}
   repository_name:
     description: Name of the current repository.
+    value: ${{ steps.getinfo.outputs.repository_name }}
   maven_revision:
     description: "Revision to be used within Maven's pom.xml: `revision` for tags, `branch_unslashed` plus `-SNAPSHOT` otherwise."
+    value: ${{ steps.getinfo.outputs.maven_revision }}
   artifact_revision:
     description: "Asset version to search Nexus artifactory for (must not include `-SNAPSHOT`): `revision` for tags, `branch_unslashed` otherwise."
+    value: ${{ steps.getinfo.outputs.artifact_revision }}
   nexus_repo:
     description: Either `releases_repo` or `snapshots_repo` from inputs depending on whether the workflow trigger was a push tag event or not.
+    value: ${{ steps.getinfo.outputs.nexus_repo }} 
   nexus_search_url:
     description: The URL to the Nexus API to search for the produced artifacts.
+    value: ${{ steps.getinfo.outputs.nexus_search_url }}
 
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: "composite"
+  steps:
+    - name: get github info
+      shell: sh
+      id: getinfo
+      run: | 
+        EVENT_NAME=${{ github.event_name }}
+        REF=${{ github.ref }}
+        if [ -n "${{ inputs.artifact_always }}" ]; then
+          ARTIFACT_ALWAYS=${{ inputs.artifact_always }}
+        fi
+        if [ -n "${{ inputs.artifact_events }}" ]; then
+          ARTIFACT_EVENTS=${{ inputs.artifact_events }}
+        fi
+        if [ -n "${{ inputs.nexus_base_path }}" ]; then
+          NEXUS_BASE_PATH=${{ inputs.nexus_base_path }}
+        fi
+        if [ -n "${{ inputs.maven_group_id }}" ]; then
+          MAVEN_GROUP_ID=${{ inputs.maven_group_id }}
+        fi
+        if [ -n "${{ inputs.maven_artifact_id }}" ]; then
+          MAVEN_ARTIFACT_ID=${{ inputs.maven_artifact_id }}
+        fi
+        if [ -n "${{ inputs.maven_classifier }}" ]; then
+          MAVEN_CLASSIFIER=${{ inputs.maven_classifier }}
+        fi
+        if [ -n "${{ inputs.releases_repo }}" ]; then
+          RELEASES_REPO=${{ inputs.releases_repo }}
+        fi
+        if [ -n "${{ inputs.snapshots_repo }}" ]; then
+          SNAPSHOTS_REPO=${{ inputs.snapshots_repo }}
+        fi
+        QUIET=${{ inputs.quiet }}
+
+        TAG=$(echo "$REF" | sed -n 's/^refs\/tags\/\(\.*\)/\1/p')
+        BRANCH=$(echo "$REF" | sed -n 's/^refs\/heads\/\(\.*\)/\1/p')
+
+        if [ "$EVENT_NAME" = "push" ]; then
+          SHA=${{ github.sha }}
+          if [ -n "$BRANCH" ]; then
+            BRANCH_NAME=$BRANCH
+          fi
+        elif [ "$EVENT_NAME" = "pull_request" ]; then
+          SHA=${{ github.event.pull_request.head.sha }}
+          BRANCH_NAME=$GITHUB_HEAD_REF
+        fi
+
+        BRANCH_UNSLASHED=$(echo "$BRANCH_NAME" | sed 's/[\/_]/-/g')
+        SHA_SHORT=$(echo "$SHA" | cut -c1-7)
+        REPO_NAME=${{ github.event.repository.name }}
+        
+        if [ -n "$TAG" ]; then
+          REVISION=$(echo "$TAG" | sed -e 's/^v//')
+          IS_TAG=true
+        else
+          REVISION=$SHA_SHORT
+          IS_TAG=false
+        fi
+
+        MAKE_ARTIFACT=$([ "$ARTIFACT_ALWAYS" = "true" ] || [ "$IS_TAG" = "true" ] || [ "$ARTIFACT_EVENTS" = *"$EVENT_NAME"* ] && echo "true" || echo "false")
+
+        if [ "$IS_TAG" = "true" ]; then
+          ARTIFACT_REVISION=$REVISION
+          MAVEN_REVISION=$REVISION
+          if [ -n "$RELEASES_REPO" ]; then
+            NEXUS_REPO=$RELEASES_REPO
+          else
+            NEXUS_REPO="releases"
+          fi
+        else
+          ARTIFACT_REVISION="0.0.0-$BRANCH_UNSLASHED"
+          MAVEN_REVISION="$ARTIFACT_REVISION-SNAPSHOT"
+          if [ -n "$SNAPSHOTS_REPO" ]; then
+            NEXUS_REPO=$SNAPSHOTS_REPO
+          else
+            NEXUS_REPO="snapshots"
+          fi
+        fi
+
+        echo "event_name=$EVENT_NAME" >> $GITHUB_OUTPUT
+        echo "sha=$SHA" >> $GITHUB_OUTPUT
+        echo "sha_short=$SHA_SHORT" >> $GITHUB_OUTPUT
+        echo "tag=$TAG" >> $GITHUB_OUTPUT
+        echo "is_tag=$IS_TAG" >> $GITHUB_OUTPUT
+        echo "make_artifact=$MAKE_ARTIFACT" >> $GITHUB_OUTPUT
+        echo "revision=$REVISION" >> $GITHUB_OUTPUT
+        echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+        echo "branch_unslashed=$BRANCH_UNSLASHED" >> $GITHUB_OUTPUT
+        echo "repository_name=$REPO_NAME" >> $GITHUB_OUTPUT
+        echo "maven_revision=$MAVEN_REVISION" >> $GITHUB_OUTPUT
+        echo "artifact_revision=$ARTIFACT_REVISION" >> $GITHUB_OUTPUT
+        echo "nexus_repo=$NEXUS_REPO" >> $GITHUB_OUTPUT
+
+        if [ -z "$MAVEN_EXTENSION" ]; then
+          MAVEN_EXTENSION="war"
+        fi
+        if [ -n "$NEXUS_BASE_PATH" ] && [ -n "$MAVEN_GROUP_ID" ] && [ -n "MAVEN_ARTIFACT_ID" ]; then
+          NEXUS_SEARCH_URL="$NEXUS_BASE_PATH/service/rest/v1/search/assets?repository=$NEXUS_REPO&group=$MAVEN_GROUP_ID&name=$MAVEN_ARTIFACT_ID&maven.extension=$MAVEN_EXTENSION"
+
+          if [ -n "MAVEN_CLASSIFIER" ]; then
+            NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&maven.classifier=$MAVEN_CLASSIFIER"
+          fi
+
+          if [ "$IS_TAG" = "true" ]; then
+            NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&version=$ARTIFACT_REVISION"
+          else
+            NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&version=$ARTIFACT_REVISION-*"
+          fi
+
+          NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&sort=version&direction=desc"
+          echo "nexus_search_url=$NEXUS_SEARCH_URL" >> $GITHUB_OUTPUT
+        fi
+
+        if [ "$QUIET" != "true" ]; then
+          echo "{"
+          echo "Event Name: $EVENT_NAME"
+          echo "SHA: $SHA"
+          echo "Short SHA: $SHA_SHORT"
+          echo "Tag: $TAG"
+          echo "Is Tag: $IS_TAG"
+          echo "Make Artifact: $MAKE_ARTIFACT"
+          echo "Revision: $REVISION"
+          echo "Branch Unslashed: $BRANCH_UNSLASHED"
+          echo "Repository Name: $REPO_NAME"
+          echo "Maven Revision: $MAVEN_REVISION"
+          echo "Artifact Revision: $ARTIFACT_REVISION"
+          echo "Nexus Repo: $NEXUS_REPO"
+          echo "Nexus Search URL: $NEXUS_SEARCH_URL"
+          echo "}"
+        fi       

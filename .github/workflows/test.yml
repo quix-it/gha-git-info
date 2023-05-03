@@ -6,21 +6,18 @@ on:
       - '**'
     tags:
       - '**'
+env:
+  NEXUS_BASE_PATH: https://nexus.local.domain
+  MAVEN_GROUP_ID: it.quix.github
+  MAVEN_ARTIFACT_ID: test-actions
 
 jobs:
-
-  units:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - run: npm ci
-    - run: npm test
 
   test:
     runs-on: ubuntu-latest
     steps:
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Normal run
       uses: ./
