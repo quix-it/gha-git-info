@@ -56,5 +56,5 @@ outputs:
     description: The URL to the Nexus API to search for the produced artifacts.
 
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
