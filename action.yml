@@ -90,12 +90,13 @@ runs:
         ARTIFACT_EVENTS=${{ inputs.artifact_events }}
         QUIET=${{ inputs.quiet }}
 
-        TAG=$(echo "$REF")
-        BRANCH=$(echo "$REF")
+        TAG=$(echo "$REF" | grep -oP '^refs/tags/\K.*')
+        BRANCH=$(echo "$REF" | grep -oP '^refs/heads/\K.*')
 
-        BRANCH_UNSLASHED=$(echo "$BRANCH_NAME")
-        SHA_SHORT=$(echo "$SHA")
-
+        BRANCH_UNSLASHED=$(echo "$BRANCH_NAME" | sed 's/[\/_]/-/g')
+        SHA_SHORT=$(echo "$SHA" | cut -c1-7)
+        REPO_NAME=$(jq -r .repository.name < $GITHUB_EVENT_PATH)
+        
         echo "event_name=$EVENT_NAME" >> $GITHUB_OUTPUT
         echo "sha=$SHA" >> $GITHUB_OUTPUT
         echo "sha_short=$SHA_SHORT" >> $GITHUB_OUTPUT
