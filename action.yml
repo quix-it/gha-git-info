@@ -90,39 +90,31 @@ runs:
         ARTIFACT_EVENTS=${{ inputs.artifact_events }}
         QUIET=${{ inputs.quiet }}
 
-        TAG=$(echo "$REF" | grep -oP '^refs/tags/\K.*')
-        echo "$REF" | grep -oP '^refs/tags/\K(.+)' > tag.txt
-        if [[ -s tag.txt ]]; then
-          echo "tag=$(cat tag.txt)" >> $GITHUB_OUTPUT
-        else
-          echo "No tag found in ref: $REF"
-          exit 1
+        TAG=$(echo "$REF" | sed -n 's/^refs\/tags\/\(\.*\)/\1/p')
+        BRANCH=$(echo "$REF" | sed -n 's/^refs\/heads\/\(\.*\)/\1/p')
+
+        if [ "$EVENT_NAME" == "push" ]; then
+          if [ -n "$BRANCH" ]; then
+            BRANCH_NAME=$BRANCH
+          fi
+        elif [ "$EVENT_NAME" == "pull_request" ]; then
+          SHA=$(jq -r .pull_request.head.sha < $GITHUB_EVENT_PATH)
+          BRANCH_NAME=$GITHUB_HEAD_REF
         fi
-        #BRANCH=$(echo "$REF" | grep -oP '^refs/heads/\K.*')
-#
-        #if [ "$EVENT_NAME" == "push" ]; then
-        #  if [ -n "$BRANCH" ]; then
-        #    BRANCH_NAME=$BRANCH
-        #  fi
-        #elif [ "$EVENT_NAME" == "pull_request" ]; then
-        #  SHA=$(jq -r .pull_request.head.sha < $GITHUB_EVENT_PATH)
-        #  BRANCH_NAME=$GITHUB_HEAD_REF
-        #fi
-#
-        #BRANCH_UNSLASHED=$(echo "$BRANCH_NAME" | sed 's/[\/_]/-/g')
-        #SHA_SHORT=$(echo "$SHA" | cut -c1-7)
-        #REPO_NAME=$(jq -r .repository.name < $GITHUB_EVENT_PATH)
-        #
-        #echo "event_name=$EVENT_NAME" >> $GITHUB_OUTPUT
-        #echo "sha=$SHA" >> $GITHUB_OUTPUT
-        #echo "sha_short=$SHA_SHORT" >> $GITHUB_OUTPUT
-        #echo "tag=$TAG" >> $GITHUB_OUTPUT
-        #echo "is_tag=$IS_TAG" >> $GITHUB_OUTPUT
-        #echo "make_artifact=$MAKE_ARTIFACT" >> $GITHUB_OUTPUT
-        #echo "revision=$REVISION" >> $GITHUB_OUTPUT
-        #echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
-        #echo "branch_unslashed=$BRANCH_UNSLASHED" >> $GITHUB_OUTPUT
-        #echo "repository_name=$REPO_NAME" >> $GITHUB_OUTPUT
-        #echo "maven_revision=$MAVEN_REVISION" >> $GITHUB_OUTPUT
-        #echo "artifact_revision=$ARTIFACT_REVISION" >> $GITHUB_OUTPUT
-        #echo "nexus_repo=$NEXUS_REPO" >> $GITHUB_OUTPUT
+
+        BRANCH_UNSLASHED=$(echo "$BRANCH_NAME" | sed 's/[\/_]/-/g')
+        SHA_SHORT=$(echo "$SHA" | cut -c1-7)
+        
+        echo "event_name=$EVENT_NAME" >> $GITHUB_OUTPUT
+        echo "sha=$SHA" >> $GITHUB_OUTPUT
+        echo "sha_short=$SHA_SHORT" >> $GITHUB_OUTPUT
+        echo "tag=$TAG" >> $GITHUB_OUTPUT
+        echo "is_tag=$IS_TAG" >> $GITHUB_OUTPUT
+        echo "make_artifact=$MAKE_ARTIFACT" >> $GITHUB_OUTPUT
+        echo "revision=$REVISION" >> $GITHUB_OUTPUT
+        echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+        echo "branch_unslashed=$BRANCH_UNSLASHED" >> $GITHUB_OUTPUT
+        echo "repository_name=$REPO_NAME" >> $GITHUB_OUTPUT
+        echo "maven_revision=$MAVEN_REVISION" >> $GITHUB_OUTPUT
+        echo "artifact_revision=$ARTIFACT_REVISION" >> $GITHUB_OUTPUT
+        echo "nexus_repo=$NEXUS_REPO" >> $GITHUB_OUTPUT
