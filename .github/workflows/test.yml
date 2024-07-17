@@ -41,6 +41,8 @@ jobs:
         maven_group_id: it.quix.github-input
         maven_artifact_id: input-param
         maven_extension: jar
+        snapshots_repo: example-snapshots-repo
+        releases_repo: example-releases-repo
         artifact_always: false
       env:
         NEXUS_BASE_PATH: https://this.will.be.overridden
