@@ -87,7 +87,6 @@ runs:
         REF=${{ github.ref }}
         REPO_NAME=${{ github.repository }}
         ARTIFACT_ALWAYS=${{ inputs.artifact_always }}
-        ARTIFACT_EVENTS=${{ inputs.artifact_events }}
         QUIET=${{ inputs.quiet }}
 
         TAG=$(echo "$REF" | sed -n 's/^refs\/tags\/\(\.*\)/\1/p')
