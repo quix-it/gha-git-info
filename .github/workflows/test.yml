@@ -86,5 +86,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print maven revision
-        run: echo ${{ needs.init.outputs.maven_revision }}
+        run: echo ${{ needs.test.outputs.maven_revision }}
       
