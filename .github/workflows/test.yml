@@ -81,3 +81,10 @@ jobs:
         echo "artifact_revision=${{ steps.quiet.outputs.artifact_revision }}"
         echo "nexus_repo=${{ steps.quiet.outputs.nexus_repo }}"
         echo "nexus_search_url=${{ steps.quiet.outputs.nexus_search_url }}"
+
+  test2: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print maven revision
+        run: echo ${{ needs.init.outputs.maven_revision }}
+      
