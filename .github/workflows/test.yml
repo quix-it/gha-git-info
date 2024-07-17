@@ -10,7 +10,6 @@ env:
   NEXUS_BASE_PATH: https://nexus.local.domain
   MAVEN_GROUP_ID: it.quix.github
   MAVEN_ARTIFACT_ID: test-actions
-  
 jobs:
 
   #units:
@@ -26,15 +25,15 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - name: Normal run
-      uses: ./
-      id: normal
+    #- name: Normal run
+    #  uses: ./
+    #  id: normal
 
     - name: Quiet run
       uses: ./
       id: quiet
       with:
-        quiet: true
+        quiet: false
         nexus_base_path: https://nexus.input.param
         maven_group_id: it.quix.github-input
         maven_artifact_id: input-param
