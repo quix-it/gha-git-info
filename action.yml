@@ -178,11 +178,9 @@ runs:
           echo "Is Tag: $IS_TAG"
           echo "Make Artifact: $MAKE_ARTIFACT"
           echo "Revision: $REVISION"
-          echo "Branch: $BRANCH_NAME"
           echo "Branch Unslashed: $BRANCH_UNSLASHED"
           echo "Repository Name: $REPO_NAME"
           echo "Maven Revision: $MAVEN_REVISION"
           echo "Artifact Revision: $ARTIFACT_REVISION"
           echo "Nexus Repo: $NEXUS_REPO"
-          echo "Nexus Search URL: $NEXUS_SEARCH_URL"
         fi        
