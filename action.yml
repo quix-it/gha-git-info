@@ -139,3 +139,37 @@ runs:
         echo "maven_revision=$MAVEN_REVISION" >> $GITHUB_OUTPUT
         echo "artifact_revision=$ARTIFACT_REVISION" >> $GITHUB_OUTPUT
         echo "nexus_repo=$NEXUS_REPO" >> $GITHUB_OUTPUT
+
+        if [ -n "${{ inputs.nexus_base_path }}" ] && [ -n "${{ inputs.maven_group_id }}" ] && [ -n "${{ inputs.maven_artifact_id }}" ]; then
+          NEXUS_SEARCH_URL="${{ inputs.nexus_base_path }}/service/rest/v1/search/assets?repository=$NEXUS_REPO&group=${{ inputs.maven_group_id }}&name=${{ inputs.maven_artifact_id }}&maven.extension=${{ inputs.maven_extension }}"
+
+          if [ -n "${{ inputs.maven_classifier }}" ]; then
+            NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&maven.classifier=${{ inputs.maven_classifier }}"
+          fi
+
+          if [ "$IS_TAG" == "true" ]; then
+            NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&version=$ARTIFACT_REVISION"
+          else
+            NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&version=$ARTIFACT_REVISION-*"
+          fi
+
+          NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&sort=version&direction=desc"
+          echo "nexus_search_url=$NEXUS_SEARCH_URL" >> $GITHUB_OUTPUT
+        fi
+
+        if [ "$QUIET" != "true" ]; then
+          echo "Event Name: $EVENT_NAME"
+          echo "SHA: $SHA"
+          echo "Short SHA: $SHA_SHORT"
+          echo "Tag: $TAG"
+          echo "Is Tag: $IS_TAG"
+          echo "Make Artifact: $MAKE_ARTIFACT"
+          echo "Revision: $REVISION"
+          echo "Branch: $BRANCH_NAME"
+          echo "Branch Unslashed: $BRANCH_UNSLASHED"
+          echo "Repository Name: $REPO_NAME"
+          echo "Maven Revision: $MAVEN_REVISION"
+          echo "Artifact Revision: $ARTIFACT_REVISION"
+          echo "Nexus Repo: $NEXUS_REPO"
+          echo "Nexus Search URL: $NEXUS_SEARCH_URL"
+        fi        
