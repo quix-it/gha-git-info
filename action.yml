@@ -148,8 +148,13 @@ runs:
         echo "artifact_revision=$ARTIFACT_REVISION" >> $GITHUB_OUTPUT
         echo "nexus_repo=$NEXUS_REPO" >> $GITHUB_OUTPUT
 
+        if [ -n "${{ inputs.maven_extension }}" ]; then
+          MAVEN_EXTENSION="${{ inputs.maven_extension }}"
+        else
+          MAVEN_EXTENSION="war"
+        fi
         if [ -n "${{ inputs.nexus_base_path }}" ] && [ -n "${{ inputs.maven_group_id }}" ] && [ -n "${{ inputs.maven_artifact_id }}" ]; then
-          NEXUS_SEARCH_URL="${{ inputs.nexus_base_path }}/service/rest/v1/search/assets?repository=$NEXUS_REPO&group=${{ inputs.maven_group_id }}&name=${{ inputs.maven_artifact_id }}&maven.extension=${{ inputs.maven_extension }}"
+          NEXUS_SEARCH_URL="${{ inputs.nexus_base_path }}/service/rest/v1/search/assets?repository=$NEXUS_REPO&group=${{ inputs.maven_group_id }}&name=${{ inputs.maven_artifact_id }}&maven.extension=$MAVEN_EXTENSION"
 
           if [ -n "${{ inputs.maven_classifier }}" ]; then
             NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&maven.classifier=${{ inputs.maven_classifier }}"
