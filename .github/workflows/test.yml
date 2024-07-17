@@ -84,6 +84,8 @@ jobs:
 
   test2: 
     runs-on: ubuntu-latest
+    needs: 
+      - test
     steps:
       - name: Print maven revision
         run: echo ${{ needs.test.outputs.maven_revision }}
