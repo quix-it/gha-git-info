@@ -25,36 +25,6 @@ inputs:
     description: Maven artifact extension to search for (overrides MAVEN_EXTENSION environment variable).
     required: false
 
-outputs:
-  event_name:
-    description: Same as `event_name` from `github`'s context.
-  sha:
-    description: Long commit id.
-  sha_short:
-    description: Short commit id (as in `git rev-parse --short HEAD`).
-  tag:
-    description: Tag name if the workflow has been triggered by a tag.
-  is_tag:
-    description: Boolean set to `true` if `tag` is defined.
-  make_artifact:
-    description: Boolean set to `true` if either `is_tag` output or `artifact_always` input (or `ARTIFACT_ALWAYS` environment variable if the latter is not set) is true.
-  revision:
-    description: Equals `tag` stripped by leading 'v' if `is_tag`, `sha_short` otherwise.
-  branch:
-    description: Name of the current branch (if not `is_tag`).
-  branch_unslashed:
-    description: Name of the current branch with `/`s replaced by `-`s .
-  repository_name:
-    description: Name of the current repository.
-  maven_revision:
-    description: "Revision to be used within Maven's pom.xml: `revision` for tags, `branch_unslashed` plus `-SNAPSHOT` otherwise."
-  artifact_revision:
-    description: "Asset version to search Nexus artifactory for (must not include `-SNAPSHOT`): `revision` for tags, `branch_unslashed` otherwise."
-  nexus_repo:
-    description: Either `releases_repo` or `snapshots_repo` from inputs depending on whether the workflow trigger was a push tag event or not.
-  nexus_search_url:
-    description: The URL to the Nexus API to search for the produced artifacts.
-
 runs:
   using: "composite"
   steps:
@@ -79,6 +49,19 @@ runs:
         TAG=$(echo "$REF" | grep -oP '^refs/tags/\K.*')
         BRANCH=$(echo "$REF" | grep -oP '^refs/heads/\K.*')
 
+        if [ "$EVENT_NAME" == "push" ]; then
+          if [ -n "$BRANCH" ]; then
+            BRANCH_NAME=$BRANCH
+          fi
+        elif [ "$EVENT_NAME" == "pull_request" ]; then
+          SHA=$(jq -r .pull_request.head.sha < $GITHUB_EVENT_PATH)
+          BRANCH_NAME=$GITHUB_HEAD_REF
+        fi
+
+        BRANCH_UNSLASHED=$(echo "$BRANCH_NAME" | sed 's/[\/_]/-/g')
+        SHA_SHORT=$(echo "$SHA" | cut -c1-7)
+        REPO_NAME=$(jq -r .repository.name < $GITHUB_EVENT_PATH)
+
         echo "event_name=$EVENT_NAME" >> $GITHUB_OUTPUT
         echo "sha=$SHA" >> $GITHUB_OUTPUT
         echo "sha_short=$SHA_SHORT" >> $GITHUB_OUTPUT
@@ -92,3 +75,4 @@ runs:
         echo "maven_revision=$MAVEN_REVISION" >> $GITHUB_OUTPUT
         echo "artifact_revision=$ARTIFACT_REVISION" >> $GITHUB_OUTPUT
         echo "nexus_repo=$NEXUS_REPO" >> $GITHUB_OUTPUT
+      
