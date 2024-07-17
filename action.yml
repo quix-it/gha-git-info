@@ -119,11 +119,11 @@ runs:
         if [ "$IS_TAG" == "true" ]; then
           ARTIFACT_REVISION=$REVISION
           MAVEN_REVISION=$REVISION
-          NEXUS_REPO=${{ inputs.releases_repo }} || "releases"
+          NEXUS_REPO=${{ inputs.releases_repo:-releases }} 
         else
           ARTIFACT_REVISION="0.0.0-$BRANCH_UNSLASHED"
           MAVEN_REVISION="$ARTIFACT_REVISION-SNAPSHOT"
-          NEXUS_REPO=${{ inputs.snapshots_repo }} || "snapshots"
+          NEXUS_REPO=${{ inputs.snapshots_repo:-snapshots }} 
         fi
 
         echo "event_name=$EVENT_NAME" >> $GITHUB_OUTPUT
