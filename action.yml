@@ -5,7 +5,7 @@ inputs:
   quiet:
     description: Skip printing gathered info.
     required: false
-    default: false
+    default: 'false'
   artifact_always:
     description: Always makes `make_artifact` output `true` (overrides ARTIFACT_ALWAYS environment variable).
     required: false
