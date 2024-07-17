@@ -105,6 +105,26 @@ runs:
         BRANCH_UNSLASHED=$(echo "$BRANCH_NAME" | sed 's/[\/_]/-/g')
         SHA_SHORT=$(echo "$SHA" | cut -c1-7)
         
+         if [ -n "$TAG" ]; then
+          REVISION=$(echo "$TAG" | sed -e 's/^v//')
+          IS_TAG=true
+        else
+          REVISION=$SHA_SHORT
+          IS_TAG=false
+        fi
+
+        MAKE_ARTIFACT=$([ "$ARTIFACT_ALWAYS" == "true" ] || [ "$IS_TAG" == "true" ] || [[ "$ARTIFACT_EVENTS" == *"$EVENT_NAME"* ]] && echo "true" || echo "false")
+
+        if [ "$IS_TAG" == "true" ]; then
+          ARTIFACT_REVISION=$REVISION
+          MAVEN_REVISION=$REVISION
+          NEXUS_REPO=${{ inputs.releases_repo }}
+        else
+          ARTIFACT_REVISION="0.0.0-$BRANCH_UNSLASHED"
+          MAVEN_REVISION="$ARTIFACT_REVISION-SNAPSHOT"
+          NEXUS_REPO=${{ inputs.snapshots_repo }}
+        fi
+
         echo "event_name=$EVENT_NAME" >> $GITHUB_OUTPUT
         echo "sha=$SHA" >> $GITHUB_OUTPUT
         echo "sha_short=$SHA_SHORT" >> $GITHUB_OUTPUT
