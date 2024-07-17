@@ -144,7 +144,7 @@ runs:
 
         if [ -n "${{ inputs.maven_extension }}" ]; then
           MAVEN_EXTENSION="${{ inputs.maven_extension }}"
-        else if [ -z "$MAVEN_EXTENSION" ]; then
+        elif [ -z "$MAVEN_EXTENSION" ]; then
           MAVEN_EXTENSION="war"
         fi
         if [ -n "${{ inputs.nexus_base_path }}" ] && [ -n "${{ inputs.maven_group_id }}" ] && [ -n "${{ inputs.maven_artifact_id }}" ]; then
