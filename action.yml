@@ -72,7 +72,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-
     - name: get github info
       shell: bash
       id: getinfo
@@ -116,7 +115,7 @@ runs:
           MAVEN_REVISION=$REVISION
           if [ -n "${{ inputs.releases_repo }}" ]; then
             NEXUS_REPO="${{ inputs.releases_repo }}"
-          else
+          elif [ -z "$NEXUS_REPO" ]; then
             NEXUS_REPO="releases"
           fi
         else
@@ -124,7 +123,7 @@ runs:
           MAVEN_REVISION="$ARTIFACT_REVISION-SNAPSHOT"
           if [ -n "${{ inputs.snapshots_repo }}" ]; then
             NEXUS_REPO="${{ inputs.snapshots_repo }}"
-          else
+          elif [ -z "$NEXUS_REPO" ]; then
             NEXUS_REPO="snapshots"
           fi
         fi
@@ -145,7 +144,7 @@ runs:
 
         if [ -n "${{ inputs.maven_extension }}" ]; then
           MAVEN_EXTENSION="${{ inputs.maven_extension }}"
-        else
+        else if [ -z "$MAVEN_EXTENSION" ]; then
           MAVEN_EXTENSION="war"
         fi
         if [ -n "${{ inputs.nexus_base_path }}" ] && [ -n "${{ inputs.maven_group_id }}" ] && [ -n "${{ inputs.maven_artifact_id }}" ]; then
@@ -178,4 +177,5 @@ runs:
           echo "Maven Revision: $MAVEN_REVISION"
           echo "Artifact Revision: $ARTIFACT_REVISION"
           echo "Nexus Repo: $NEXUS_REPO"
-        fi        
+          echo "Nexus Search URL: $NEXUS_SEARCH_URL"
+        fi       

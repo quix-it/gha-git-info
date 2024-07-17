@@ -6,7 +6,11 @@ on:
       - '**'
     tags:
       - '**'
-
+env:
+  NEXUS_BASE_PATH: https://nexus.local.domain
+  MAVEN_GROUP_ID: it.quix.github
+  MAVEN_ARTIFACT_ID: test-actions
+  
 jobs:
 
   #units:
@@ -25,12 +29,6 @@ jobs:
     - name: Normal run
       uses: ./
       id: normal
-      env:
-        NEXUS_BASE_PATH: https://nexus.local.domain
-        MAVEN_GROUP_ID: it.quix.github
-        MAVEN_ARTIFACT_ID: test-actions
-        ARTIFACT_ALWAYS: true
-        ARTIFACT_EVENTS: pull_request
 
     - name: Quiet run
       uses: ./
@@ -44,11 +42,6 @@ jobs:
         snapshots_repo: example-snapshots-repo
         releases_repo: example-releases-repo
         artifact_always: false
-      env:
-        NEXUS_BASE_PATH: https://this.will.be.overridden
-        MAVEN_GROUP_ID: it.quix.environment
-        MAVEN_ARTIFACT_ID: overridden
-        ARTIFACT_ALWAYS: true
 
     - name: Print info from 'normal'
       run: |
