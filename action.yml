@@ -64,7 +64,7 @@ outputs:
     value: ${{ steps.getinfo.outputs.artifact_revision }}
   nexus_repo:
     description: Either `releases_repo` or `snapshots_repo` from inputs depending on whether the workflow trigger was a push tag event or not.
-    value: ${{ steps.getinfo.outputs.nexus_repo }}
+    value: ${{ steps.getinfo.outputs.nexus_repo }} 
   nexus_search_url:
     description: The URL to the Nexus API to search for the produced artifacts.
     value: ${{ steps.getinfo.outputs.nexus_search_url }}
@@ -119,11 +119,11 @@ runs:
         if [ "$IS_TAG" == "true" ]; then
           ARTIFACT_REVISION=$REVISION
           MAVEN_REVISION=$REVISION
-          NEXUS_REPO=${{ inputs.releases_repo }}
+          NEXUS_REPO=${{ inputs.releases_repo }} || "releases"
         else
           ARTIFACT_REVISION="0.0.0-$BRANCH_UNSLASHED"
           MAVEN_REVISION="$ARTIFACT_REVISION-SNAPSHOT"
-          NEXUS_REPO=${{ inputs.snapshots_repo }}
+          NEXUS_REPO=${{ inputs.snapshots_repo }} || "snapshots"
         fi
 
         echo "event_name=$EVENT_NAME" >> $GITHUB_OUTPUT
