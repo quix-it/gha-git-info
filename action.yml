@@ -31,8 +31,8 @@ runs:
     - name: Set up Git
       shell: bash 
       run: | 
-        apt-get update 
-        apt-get install -y git jq
+        sudo apt-get update 
+        sudo apt-get install -y git jq
 
     - name: get github info
       shell: bash
