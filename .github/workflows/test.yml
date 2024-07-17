@@ -22,15 +22,15 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - name: Normal run
-      uses: ./
-      id: normal
-      env:
-        NEXUS_BASE_PATH: https://nexus.local.domain
-        MAVEN_GROUP_ID: it.quix.github
-        MAVEN_ARTIFACT_ID: test-actions
-        artifact_always: true
-        ARTIFACT_EVENTS: pull_request
+    #- name: Normal run
+    #  uses: ./
+    #  id: normal
+    #  env:
+    #    NEXUS_BASE_PATH: https://nexus.local.domain
+    #    MAVEN_GROUP_ID: it.quix.github
+    #    MAVEN_ARTIFACT_ID: test-actions
+    #    ARTIFACT_ALWAYS: true
+    #    ARTIFACT_EVENTS: pull_request
 
     - name: Quiet run
       uses: ./
