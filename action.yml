@@ -80,12 +80,16 @@ runs:
         SHA=${{ github.sha }}
         REF=${{ github.ref }}
         REPO_NAME=${{ github.repository }}
-        ARTIFACT_ALWAYS=${{ inputs.artifact_always:-${ARTIFACT_ALWAYS} }}
-        ARTIFACT_EVENTS=${{ inputs.artifact_events:-${ARTIFACT_EVENTS} }}
-        NEXUS_BASE_PATH="${{ inputs.nexus_base_path:-${NEXUS_BASE_PATH} }}"
-        MAVEN_GROUP_ID="${{ inputs.maven_group_id:-${MAVEN_GROUP_ID} }}"
-        MAVEN_ARTIFACT_ID="${{ inputs.maven_artifact_id:-${MAVEN_ARTIFACT_ID} }}"
-        MAVEN_CLASSIFIER="${{ inputs.maven_classifier:-${MAVEN_CLASSIFIER} }}"
+        if [ -n ${{ inputs.artifact_always }} ]; then
+          ARTIFACT_ALWAYS=${{ inputs.artifact_always }}
+        fi
+        echo "****Artifact Always: $ARTIFACT_ALWAYS"
+        
+        ARTIFACT_EVENTS=${{ inputs.artifact_events }}
+        NEXUS_BASE_PATH="${{ inputs.nexus_base_path }}"
+        MAVEN_GROUP_ID="${{ inputs.maven_group_id }}"
+        MAVEN_ARTIFACT_ID="${{ inputs.maven_artifact_id }}"
+        MAVEN_CLASSIFIER="${{ inputs.maven_classifier }}"
         echo "Maven CLASSIFIER: $MAVEN_CLASSIFIER"
 
         QUIET=${{ inputs.quiet }}

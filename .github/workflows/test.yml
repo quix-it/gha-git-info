@@ -10,6 +10,7 @@ env:
   NEXUS_BASE_PATH: https://nexus.local.domain
   MAVEN_GROUP_ID: it.quix.github
   MAVEN_ARTIFACT_ID: test-actions
+  ARTIFACT_ALWAYS: true
 jobs:
 
   #units:
