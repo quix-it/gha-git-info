@@ -24,6 +24,17 @@ inputs:
   maven_extension:
     description: Maven artifact extension to search for (overrides MAVEN_EXTENSION environment variable).
     required: false
+  maven_classifier: 
+    description: Maven classifier to search for (overrides MAVEN_CLASSIFIER environment variable)
+    required: false
+  releses_repo: 
+    description: Releases repository name (overrides RELEASES_REPO environment variable)
+    required: false
+  snapshots_repo: 
+    description: Snapshots repository name (overrides SNAPSHOTS_REPO environment variable)
+    required: false
+  
+  
 
 outputs:
   event_name:
@@ -106,19 +117,13 @@ runs:
         if [ -n "${{ inputs.releases_repo }}" ]; then
           RELEASES_REPO=${{ inputs.releases_repo }}
         fi
-        if [ -n "${{ inputs.SNAPSHOTS_REPO }}" ]; then
-          snapshots_repo=${{ inputs.SNAPSHOTS_REPO }}
+        if [ -n "${{ inputs.snapshots_repo }}" ]; then
+          SNAPSHOTS_REPO=${{ inputs.snapshots_repo }}
         fi
-        if [ -n ${{ inputs.quiet }} ]; then
-          QUIET=${{ inputs.quiet }}
-        else
-          QUIET="false"
-        fi
+        QUIET=${{ inputs.quiet }}
 
         TAG=$(echo "$REF" | sed -n 's/^refs\/tags\/\(\.*\)/\1/p')
-        echo "*****TAG match: $TAG"
         BRANCH=$(echo "$REF" | sed -n 's/^refs\/heads\/\(\.*\)/\1/p')
-        echo "*****BRANCH match: $BRANCH"
 
         if [ "$EVENT_NAME" == "push" ]; then
           SHA=${{ github.sha }}
