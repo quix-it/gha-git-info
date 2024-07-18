@@ -103,7 +103,11 @@ runs:
         if [ -n "${{ inputs.SNAPSHOTS_REPO }}" ]; then
           snapshots_repo=${{ inputs.SNAPSHOTS_REPO }}
         fi
-        QUIET=${{ inputs.quiet }}
+        if [ -n ${{ inputs.quiet }} ]; then
+          QUIET=${{ inputs.quiet }}
+        else
+          QUIET="false"
+        fi
 
         TAG=$(echo "$REF" | sed -n 's/^refs\/tags\/\(\.*\)/\1/p')
         echo "*****TAG match: $TAG"
@@ -166,16 +170,14 @@ runs:
         echo "artifact_revision=$ARTIFACT_REVISION" >> $GITHUB_OUTPUT
         echo "nexus_repo=$NEXUS_REPO" >> $GITHUB_OUTPUT
 
-        if [ -n "${{ inputs.maven_extension }}" ]; then
-          MAVEN_EXTENSION="${{ inputs.maven_extension }}"
-        elif [ -z "$MAVEN_EXTENSION" ]; then
+        if [ -z "$MAVEN_EXTENSION" ]; then
           MAVEN_EXTENSION="war"
         fi
-        if [ -n "$NEXUS_BASE_PATH" ] && [ -n "$MAVEN_GROUP_ID" ] && [ -n "${{ inputs.maven_artifact_id }}" ]; then
-          NEXUS_SEARCH_URL="$NEXUS_BASE_PATH/service/rest/v1/search/assets?repository=$NEXUS_REPO&group=$MAVEN_GROUP_ID&name=${{ inputs.maven_artifact_id }}&maven.extension=$MAVEN_EXTENSION"
+        if [ -n "$NEXUS_BASE_PATH" ] && [ -n "$MAVEN_GROUP_ID" ] && [ -n "MAVEN_ARTIFACT_ID" ]; then
+          NEXUS_SEARCH_URL="$NEXUS_BASE_PATH/service/rest/v1/search/assets?repository=$NEXUS_REPO&group=$MAVEN_GROUP_ID&name=MAVEN_ARTIFACT_ID&maven.extension=$MAVEN_EXTENSION"
 
-          if [ -n "${{ inputs.maven_classifier }}" ]; then
-            NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&maven.classifier=${{ inputs.maven_classifier }}"
+          if [ -n "MAVEN_CLASSIFIER" ]; then
+            NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&maven.classifier=MAVEN_CLASSIFIER"
           fi
 
           if [ "$IS_TAG" == "true" ]; then
