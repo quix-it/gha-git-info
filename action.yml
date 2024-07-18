@@ -137,19 +137,17 @@ runs:
         if [ "$IS_TAG" == "true" ]; then
           ARTIFACT_REVISION=$REVISION
           MAVEN_REVISION=$REVISION
-          if [ -n "${{ inputs.releases_repo }}" ]; then
-            NEXUS_REPO="${{ inputs.releases_repo }}"
-          elif [ -n "$NEXUS_REPO" ]; then
-            NEXUS_REPO=$NEXUS_REPO
+          if [ -n "$RELEASES_REPO" ]; then
+            NEXUS_REPO=$RELEASES_REPO
           else
             NEXUS_REPO="releases"
           fi
         else
           ARTIFACT_REVISION="0.0.0-$BRANCH_UNSLASHED"
           MAVEN_REVISION="$ARTIFACT_REVISION-SNAPSHOT"
-          if [ -n "${{ inputs.snapshots_repo }}" ]; then
-            NEXUS_REPO="${{ inputs.snapshots_repo }}"
-          elif [ -n "$NEXUS_REPO" ]; then
+          if [ -n "$SNAPSHOTS_REPO" ]; then
+            NEXUS_REPO=$SNAPSHOTS_REPO
+          else
             NEXUS_REPO="snapshots"
           fi
         fi
