@@ -77,27 +77,41 @@ runs:
       id: getinfo
       run: | 
         EVENT_NAME=${{ github.event_name }}
-        SHA=${{ github.sha }}
         REF=${{ github.ref }}
         REPO_NAME=${{ github.repository }}
         if [ -n "${{ inputs.artifact_always }}" ]; then
           ARTIFACT_ALWAYS=${{ inputs.artifact_always }}
         fi
-        echo "****Artifact Always: $ARTIFACT_ALWAYS"
-
-        ARTIFACT_EVENTS=${{ inputs.artifact_events }}
-        NEXUS_BASE_PATH="${{ inputs.nexus_base_path }}"
-        MAVEN_GROUP_ID="${{ inputs.maven_group_id }}"
-        MAVEN_ARTIFACT_ID="${{ inputs.maven_artifact_id }}"
-        MAVEN_CLASSIFIER="${{ inputs.maven_classifier }}"
-        echo "Maven CLASSIFIER: $MAVEN_CLASSIFIER"
-
+        if [ -n "${{ inputs.artifact_events }}" ]; then
+          ARTIFACT_EVENTS=${{ inputs.artifact_events }}
+        fi
+        if [ -n "${{ inputs.nexus_base_path }}" ]; then
+          NEXUS_BASE_PATH=${{ inputs.nexus_base_path }}
+        fi
+        if [ -n "${{ inputs.maven_group_id }}" ]; then
+          MAVEN_GROUP_ID=${{ inputs.maven_group_id }}
+        fi
+        if [ -n "${{ inputs.maven_artifact_id }}" ]; then
+          MAVEN_ARTIFACT_ID=${{ inputs.maven_artifact_id }}
+        fi
+        if [ -n "${{ inputs.maven_classifier }}" ]; then
+          MAVEN_CLASSIFIER=${{ inputs.maven_classifier }}
+        fi
+        if [ -n "${{ inputs.releases_repo }}" ]; then
+          RELEASES_REPO=${{ inputs.releases_repo }}
+        fi
+        if [ -n "${{ inputs.SNAPSHOTS_REPO }}" ]; then
+          snapshots_repo=${{ inputs.SNAPSHOTS_REPO }}
+        fi
         QUIET=${{ inputs.quiet }}
 
         TAG=$(echo "$REF" | sed -n 's/^refs\/tags\/\(\.*\)/\1/p')
+        echo "*****TAG match: $TAG"
         BRANCH=$(echo "$REF" | sed -n 's/^refs\/heads\/\(\.*\)/\1/p')
+        echo "*****BRANCH match: $BRANCH"
 
         if [ "$EVENT_NAME" == "push" ]; then
+          SHA=${{ github.sha }}
           if [ -n "$BRANCH" ]; then
             BRANCH_NAME=$BRANCH
           fi
