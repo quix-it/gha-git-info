@@ -202,6 +202,7 @@ runs:
         fi
 
         if [ "$QUIET" != "true" ]; then
+          echo "{"
           echo "Event Name: $EVENT_NAME"
           echo "SHA: $SHA"
           echo "Short SHA: $SHA_SHORT"
@@ -215,4 +216,5 @@ runs:
           echo "Artifact Revision: $ARTIFACT_REVISION"
           echo "Nexus Repo: $NEXUS_REPO"
           echo "Nexus Search URL: $NEXUS_SEARCH_URL"
+          echo "}"
         fi       
