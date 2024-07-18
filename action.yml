@@ -82,9 +82,11 @@ runs:
         REPO_NAME=${{ github.repository }}
         if [ -n ${{ inputs.artifact_always }} ]; then
           ARTIFACT_ALWAYS=${{ inputs.artifact_always }}
+        else
+          ARTIFACT_ALWAYS=${{ env.ARTIFACT_ALWAYS }}
         fi
         echo "****Artifact Always: $ARTIFACT_ALWAYS"
-        
+
         ARTIFACT_EVENTS=${{ inputs.artifact_events }}
         NEXUS_BASE_PATH="${{ inputs.nexus_base_path }}"
         MAVEN_GROUP_ID="${{ inputs.maven_group_id }}"
