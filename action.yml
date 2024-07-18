@@ -83,7 +83,7 @@ runs:
         if [ -n ${{ inputs.artifact_always }} ]; then
           ARTIFACT_ALWAYS=${{ inputs.artifact_always }}
         else
-          ARTIFACT_ALWAYS=${{ env.ARTIFACT_ALWAYS }}
+          ARTIFACT_ALWAYS=$ARTIFACT_ALWAYS
         fi
         echo "****Artifact Always: $ARTIFACT_ALWAYS"
 
