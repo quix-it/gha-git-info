@@ -80,6 +80,8 @@ runs:
         SHA=${{ github.sha }}
         REF=${{ github.ref }}
         REPO_NAME=${{ github.repository }}
+        if [ -n "${{ inputs.artifact_always }}" ]; then
+          ARTIFACT_ALWAYS=${{ inputs.artifact_always }}
         echo "****Artifact Always: $ARTIFACT_ALWAYS"
 
         ARTIFACT_EVENTS=${{ inputs.artifact_events }}
