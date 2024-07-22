@@ -13,18 +13,11 @@ env:
 
 jobs:
 
-  #units:
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #  - uses: actions/checkout@v2
-  #  - run: npm ci
-  #  - run: npm test
-
   test:
     runs-on: ubuntu-latest
     steps:
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Normal run
       uses: ./
