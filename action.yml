@@ -140,7 +140,7 @@ runs:
           IS_TAG=false
         fi
 
-        MAKE_ARTIFACT=$([ "$ARTIFACT_ALWAYS" = "true" ] || [ "$IS_TAG" = "true" ] || [[ "$ARTIFACT_EVENTS" = *"$EVENT_NAME"* ]] && echo "true" || echo "false")
+        MAKE_ARTIFACT=$([ "$ARTIFACT_ALWAYS" = "true" ] || [ "$IS_TAG" = "true" ] || [ "$ARTIFACT_EVENTS" = *"$EVENT_NAME"* ] && echo "true" || echo "false")
 
         if [ "$IS_TAG" = "true" ]; then
           ARTIFACT_REVISION=$REVISION
