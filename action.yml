@@ -132,7 +132,8 @@ runs:
             BRANCH_NAME=$BRANCH
           fi
         elif [ "$EVENT_NAME" == "pull_request" ]; then
-          SHA=$(jq -r .pull_request.head.sha < $GITHUB_EVENT_PATH)
+          SHA=${{ github.event.pull_request.head.sha }}
+          echo "####### $SHA"
           BRANCH_NAME=$GITHUB_HEAD_REF
         fi
 
