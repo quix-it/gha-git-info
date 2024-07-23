@@ -88,10 +88,7 @@ runs:
       id: getinfo
       run: | 
         EVENT_NAME=${{ github.event_name }}
-        echo "********* $EVENT_NAME"
         REF=${{ github.ref }}
-        REPO_NAME=${{ github.repository }}
-        echo "********* $REPO_NAME"
         if [ -n "${{ inputs.artifact_always }}" ]; then
           ARTIFACT_ALWAYS=${{ inputs.artifact_always }}
         fi
@@ -123,20 +120,17 @@ runs:
 
         if [ "$EVENT_NAME" = "push" ]; then
           SHA=${{ github.sha }}
-          echo "####### $SHA"
           if [ -n "$BRANCH" ]; then
             BRANCH_NAME=$BRANCH
           fi
         elif [ "$EVENT_NAME" = "pull_request" ]; then
           SHA=${{ github.event.pull_request.head.sha }}
-          echo "####### $SHA"
           BRANCH_NAME=$GITHUB_HEAD_REF
         fi
 
         BRANCH_UNSLASHED=$(echo "$BRANCH_NAME" | sed 's/[\/_]/-/g')
         SHA_SHORT=$(echo "$SHA" | cut -c1-7)
         REPO_NAME=${{ github.event.repository.name }}
-        echo "********* $REPO_NAME"
         
         if [ -n "$TAG" ]; then
           REVISION=$(echo "$TAG" | sed -e 's/^v//')
