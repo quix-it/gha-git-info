@@ -1,6 +1,5 @@
 # Git info
 
-![unit-test](https://github.com/quix-it/gha-git-info/actions/workflows/test.yml/badge.svg?branch=v1)
 
 This is a GitHub Actions action used for manipulating info from `github` context and exposing them for being consumed by subsequent steps/jobs in a workflow.
 
@@ -55,7 +54,7 @@ If the `nexus_base_path`, `maven_group_id` and `maven_artifact_id` parameters ar
 
 ```yaml
 ...
-    - uses: quix-it/gha-git-info@v1
+    - uses: quix-it/gha-git-info@v2
       id: info
       env:
         NEXUS_BASE_PATH: https://nexus.local/nexus
