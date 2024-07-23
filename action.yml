@@ -88,6 +88,7 @@ runs:
       id: getinfo
       run: | 
         EVENT_NAME=${{ github.event_name }}
+        echo "********* $EVENT_NAME"
         REF=${{ github.ref }}
         REPO_NAME=${{ github.repository }}
         echo "********* $REPO_NAME"
