@@ -128,6 +128,7 @@ runs:
 
         if [ "$EVENT_NAME" == "push" ]; then
           SHA=${{ github.sha }}
+          echo "####### $SHA"
           if [ -n "$BRANCH" ]; then
             BRANCH_NAME=$BRANCH
           fi
