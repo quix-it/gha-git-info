@@ -121,13 +121,13 @@ runs:
         TAG=$(echo "$REF" | sed -n 's/^refs\/tags\/\(\.*\)/\1/p')
         BRANCH=$(echo "$REF" | sed -n 's/^refs\/heads\/\(\.*\)/\1/p')
 
-        if [ "$EVENT_NAME" == "push" ]; then
+        if [ "$EVENT_NAME" = "push" ]; then
           SHA=${{ github.sha }}
           echo "####### $SHA"
           if [ -n "$BRANCH" ]; then
             BRANCH_NAME=$BRANCH
           fi
-        elif [ "$EVENT_NAME" == "pull_request" ]; then
+        elif [ "$EVENT_NAME" = "pull_request" ]; then
           SHA=${{ github.event.pull_request.head.sha }}
           echo "####### $SHA"
           BRANCH_NAME=$GITHUB_HEAD_REF
@@ -146,9 +146,9 @@ runs:
           IS_TAG=false
         fi
 
-        MAKE_ARTIFACT=$([ "$ARTIFACT_ALWAYS" == "true" ] || [ "$IS_TAG" == "true" ] || [[ "$ARTIFACT_EVENTS" == *"$EVENT_NAME"* ]] && echo "true" || echo "false")
+        MAKE_ARTIFACT=$([ "$ARTIFACT_ALWAYS" = "true" ] || [ "$IS_TAG" = "true" ] || [[ "$ARTIFACT_EVENTS" = *"$EVENT_NAME"* ]] && echo "true" || echo "false")
 
-        if [ "$IS_TAG" == "true" ]; then
+        if [ "$IS_TAG" = "true" ]; then
           ARTIFACT_REVISION=$REVISION
           MAVEN_REVISION=$REVISION
           if [ -n "$RELEASES_REPO" ]; then
@@ -190,7 +190,7 @@ runs:
             NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&maven.classifier=$MAVEN_CLASSIFIER"
           fi
 
-          if [ "$IS_TAG" == "true" ]; then
+          if [ "$IS_TAG" = "true" ]; then
             NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&version=$ARTIFACT_REVISION"
           else
             NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&version=$ARTIFACT_REVISION-*"
