@@ -104,6 +104,9 @@ runs:
         if [ -n "${{ inputs.maven_artifact_id }}" ]; then
           MAVEN_ARTIFACT_ID=${{ inputs.maven_artifact_id }}
         fi
+        if [ -n "${{ inputs.maven_extension }}" ]; then
+          MAVEN_EXTENSION="${{ inputs.maven_extension }}"
+        fi
         if [ -n "${{ inputs.maven_classifier }}" ]; then
           MAVEN_CLASSIFIER=${{ inputs.maven_classifier }}
         fi
