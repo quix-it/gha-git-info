@@ -27,7 +27,7 @@ inputs:
   maven_classifier: 
     description: Maven classifier to search for (overrides MAVEN_CLASSIFIER environment variable)
     required: false
-  releses_repo: 
+  releases_repo:
     description: Releases repository name (overrides RELEASES_REPO environment variable)
     required: false
   snapshots_repo: 
@@ -177,10 +177,10 @@ runs:
         if [ -z "$MAVEN_EXTENSION" ]; then
           MAVEN_EXTENSION="war"
         fi
-        if [ -n "$NEXUS_BASE_PATH" ] && [ -n "$MAVEN_GROUP_ID" ] && [ -n "MAVEN_ARTIFACT_ID" ]; then
+        if [ -n "$NEXUS_BASE_PATH" ] && [ -n "$MAVEN_GROUP_ID" ] && [ -n "$MAVEN_ARTIFACT_ID" ]; then
           NEXUS_SEARCH_URL="$NEXUS_BASE_PATH/service/rest/v1/search/assets?repository=$NEXUS_REPO&group=$MAVEN_GROUP_ID&name=$MAVEN_ARTIFACT_ID&maven.extension=$MAVEN_EXTENSION"
 
-          if [ -n "MAVEN_CLASSIFIER" ]; then
+          if [ -n "$MAVEN_CLASSIFIER" ]; then
             NEXUS_SEARCH_URL="$NEXUS_SEARCH_URL&maven.classifier=$MAVEN_CLASSIFIER"
           fi
 
